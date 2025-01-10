@@ -420,6 +420,8 @@ async function subscribeToBinanceWebSocket() {
 app.post('/get-prediction', async (req, res) => {
   const { symbol } = req.body;
 
+  console.log(symbol)
+
   try {
       const response = await axios.post('http://127.0.0.1:5000/predict', { symbol });
       res.json(response.data); // Send the response once

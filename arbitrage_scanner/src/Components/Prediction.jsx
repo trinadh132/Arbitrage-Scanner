@@ -26,7 +26,7 @@ function Prediction() {
       const response = await fetch("http://localhost:8080/get-prediction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ symbol: selectedToken }),
+        body: JSON.stringify({ symbol: selectedToken.toLocaleUpperCase() }),
       });
       const result = await response.json();
       setPredictionData(result);
@@ -126,7 +126,7 @@ function Prediction() {
       {isLoading && <p>Loading prediction...</p>}
       {predictionData && (
         <div className="prediction-results">
-          <h2 >
+          <h2>
             Token: <span>{selectedToken.replace("USDT", "")}</span>
           </h2>
           <canvas ref={chartRef} id="predictionChart"></canvas>
@@ -138,6 +138,10 @@ function Prediction() {
             <p>
               <strong>Percentage Accuracy:</strong>{" "}
               {predictionData.percentage_accuracy}%
+            </p>
+            <p>
+              <strong>Predicted Value:</strong>{" "}
+              {predictionData.predicted[predictionData.predicted.length - 1]}
             </p>
           </div>
         </div>
