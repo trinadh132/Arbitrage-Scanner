@@ -4,11 +4,11 @@ import "./Home.css";
 
 function Home() {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Show loading only on initial fetch
   const navigate = useNavigate(); // Hook to navigate between routes
 
-  const fetchData = async () => {
-    setLoading(true);
+  const fetchData = async (showLoading = false) => {
+    if (showLoading) setLoading(true); // Show loading only during initial fetch
     try {
       const response = await fetch("http://localhost:8080/api/arbitrage-opportunities");
       const result = await response.json();
@@ -16,24 +16,27 @@ function Home() {
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false); // Hide loading after initial fetch
     }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData(true); // Fetch data initially with loading indicator
+
+    // Set up an interval to fetch data every 45 seconds without loading indicator
+    const interval = setInterval(() => {
+      fetchData(false);
+    }, 45000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="home-container">
       <h1>Opportunities</h1>
       {loading ? (
-        <div className="loader">
-          <img
-            src="https://cdn.dribbble.com/users/1186261/screenshots/3718681/_______.gif"
-            alt="Loading..."
-          />
-        </div>
+        <p>Loading...</p> // Show loading only during initial fetch
       ) : (
         <>
           <table className="data-table">
@@ -63,9 +66,6 @@ function Home() {
             </tbody>
           </table>
           <div className="button-container">
-            <button className="refresh-button" onClick={fetchData}>
-              Refresh
-            </button>
             <button
               className="prediction-button"
               onClick={() => navigate("/prediction")}

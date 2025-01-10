@@ -6,6 +6,7 @@ const { Connection, PublicKey } = require('@solana/web3.js');
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 const PORT = 8080;
 
 // Fee configurations
@@ -344,42 +345,7 @@ app.get('/api/pair-status', (req, res) => {
   const status = Object.fromEntries(pairStatus);
   res.json({ status });
 });
-// API Endpoint to return dummy JSON data
-app.get('/api/dummy', (req, res) => {
-    const dummyData = {
-      opportunities: [
-        {
-          token: "PEOPLE",
-          action: "Buy on Jupiter, Sell on Binance",
-          profit: 0.0012,
-          profitPercentage: "3.12",
-          binancePrice: "0.0392",
-          jupiterPrice: "0.0379",
-          confidence: "high"
-        },
-        {
-          token: "AVAX",
-          action: "Buy on Jupiter, Sell on Binance",
-          profit: 0.2835,
-          profitPercentage: "0.77",
-          binancePrice: "37.3100",
-          jupiterPrice: "36.8786",
-          confidence: "high"
-        },
-        {
-          token: "UNI",
-          action: "Buy on Jupiter, Sell on Binance",
-          profit: 0.0707,
-          profitPercentage: "0.54",
-          binancePrice: "13.2200",
-          jupiterPrice: "13.0968",
-          confidence: "high"
-        }
-      ]
-    };
-  
-    res.json(dummyData);
-  });
+
 
 app.get('/api/arbitrage-opportunities', async (req, res) => {
   const opportunities = await calculateArbitrageOpportunities();
@@ -452,15 +418,20 @@ async function subscribeToBinanceWebSocket() {
 }
 
 app.post('/get-prediction', async (req, res) => {
-    const { symbol } = req.body;
+  const { symbol } = req.body;
 
-    try {
-        const response = await axios.post('http://127.0.0.1:5000/predict', { symbol });
-        res.json(response.data);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+  try {
+      const response = await axios.post('http://127.0.0.1:5000/predict', { symbol });
+      res.json(response.data); // Send the response once
+      console.log(response.data); // Log the data correctly
+  } catch (error) {
+      console.error('Error fetching prediction:', error.message);
+      if (!res.headersSent) { // Ensure no headers are sent before
+          res.status(500).json({ error: error.message });
+      }
+  }
 });
+
 
 
 // Start server

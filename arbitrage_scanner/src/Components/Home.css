@@ -1,118 +1,145 @@
-/* General Styling */
-body {
-    margin: 0;
-    padding: 0;
-    background-image: url('abstract-big-data-digital-technology-background-design_1017-22920.jpg');
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
-    color: #fff;
-  }
-  
-  .home-container {
-    font-family: "Arial", sans-serif;
-    padding: 20px;
-    text-align: center;
-    color: #fff;
-  }
-  
-  h1 {
-    color: #fff;
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-  }
-  
-  /* Loader Styling */
-  .loader {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100px;
-  }
-  
-  .loader img {
-    width: 100px;
-    height: 100px;
-  }
-  
-  /* Table Styling */
+.home-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+.home-container h1 {
+  color: #2d3748;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  margin-bottom: 2rem;
+}
+
+.data-table thead {
+  background-color: #f7fafc;
+}
+
+.data-table th {
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4a5568;
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.data-table td {
+  padding: 1rem;
+  color: #2d3748;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.data-table tbody tr:hover {
+  background-color: #f7fafc;
+  transition: background-color 0.2s ease;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Style for profit cells */
+.data-table td:nth-child(3),
+.data-table td:nth-child(4) {
+  font-weight: 600;
+  color: #38a169;  /* Green color for profit */
+}
+
+/* Loading state */
+.home-container p {
+  text-align: center;
+  color: #4a5568;
+  font-size: 1.1rem;
+  margin: 2rem 0;
+}
+
+/* Button container */
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.prediction-button {
+  background-color: #4299e1;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(66, 153, 225, 0.2);
+}
+
+.prediction-button:hover {
+  background-color: #3182ce;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(66, 153, 225, 0.3);
+}
+
+.prediction-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(66, 153, 225, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
   .data-table {
-    width: 80%;
-    margin: 0 auto;
-    border-collapse: collapse;
-    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent table */
-    color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
+    font-size: 0.9rem;
   }
   
   .data-table th,
   .data-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
+    padding: 0.75rem;
   }
-  
-  .data-table th {
-    background-color: #007bff;
-    color: white;
-    font-weight: bold;
-  }
-  
-  .data-table tr:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  
-  .data-table tr:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    cursor: pointer;
-  }
-  
-  /* Refresh Button */
-  /*.button-container {
-    text-align: right;
-    margin-right: 10%;
-    margin-top: 80px;
-  }
-  
-  .refresh-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .refresh-button:hover {
-    background-color: #0056b3;
-  }*/
+}
 
-  .button-container {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-right: 10%;
-    margin-top: 10px;
+@media (max-width: 768px) {
+  .home-container {
+    margin: 1rem auto;
+    padding: 0 1rem;
+  }
+
+  .data-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
   }
   
-  .refresh-button,
-  .prediction-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  .home-container h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
   }
-  
-  .refresh-button:hover,
-  .prediction-button:hover {
-    background-color: #0056b3;
+}
+
+/* Optional: Add smooth fade-in animation for the table */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.data-table {
+  animation: fadeIn 0.3s ease-out;
+}
