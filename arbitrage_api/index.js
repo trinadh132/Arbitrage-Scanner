@@ -6,7 +6,7 @@ const { Connection, PublicKey } = require('@solana/web3.js');
 
 const app = express();
 app.use(cors());
-const PORT = 5000;
+const PORT = 8080;
 
 // Fee configurations
 const JUPITER_SWAP_FEE = 0.003;    // 0.3% Jupiter swap fee
@@ -133,9 +133,10 @@ async function getJupiterPrice(inputMint, outputMint, tokenList) {
 
 // Fetch Binance USDC trading pairs
 //https://api.binance.com/api/v3/exchangeInfo
+//https://api.binance.us/api/v3/exchangeInfo
 async function getBinanceUSDCPairs() {
   try {
-    const response = await axios.get('https://api.binance.us/api/v3/exchangeInfo');
+    const response = await axios.get('https://api.binance.com/api/v3/exchangeInfo');
     return response.data.symbols
       .filter(pair => pair.quoteAsset === 'USDC' && pair.status === 'TRADING')
       .map(pair => ({
@@ -343,6 +344,42 @@ app.get('/api/pair-status', (req, res) => {
   const status = Object.fromEntries(pairStatus);
   res.json({ status });
 });
+// API Endpoint to return dummy JSON data
+app.get('/api/dummy', (req, res) => {
+    const dummyData = {
+      opportunities: [
+        {
+          token: "PEOPLE",
+          action: "Buy on Jupiter, Sell on Binance",
+          profit: 0.0012,
+          profitPercentage: "3.12",
+          binancePrice: "0.0392",
+          jupiterPrice: "0.0379",
+          confidence: "high"
+        },
+        {
+          token: "AVAX",
+          action: "Buy on Jupiter, Sell on Binance",
+          profit: 0.2835,
+          profitPercentage: "0.77",
+          binancePrice: "37.3100",
+          jupiterPrice: "36.8786",
+          confidence: "high"
+        },
+        {
+          token: "UNI",
+          action: "Buy on Jupiter, Sell on Binance",
+          profit: 0.0707,
+          profitPercentage: "0.54",
+          binancePrice: "13.2200",
+          jupiterPrice: "13.0968",
+          confidence: "high"
+        }
+      ]
+    };
+  
+    res.json(dummyData);
+  });
 
 app.get('/api/arbitrage-opportunities', async (req, res) => {
   const opportunities = await calculateArbitrageOpportunities();
@@ -351,6 +388,7 @@ app.get('/api/arbitrage-opportunities', async (req, res) => {
 
 // Subscribe to Binance WebSocket for matched pairs
 //wss://stream.binance.com:9443/ws
+//wss://stream.binance.us:9443/ws
 async function subscribeToBinanceWebSocket() {
   try {
     const matchedPairs = await matchTradingPairs();
@@ -363,7 +401,7 @@ async function subscribeToBinanceWebSocket() {
 
     console.log(`Attempting to subscribe to ${matchedPairs.length} pairs...`);
 
-    const ws = new WebSocket('wss://stream.binance.us:9443/ws');
+    const ws = new WebSocket('wss://stream.binance.com:9443/ws');
     const streams = matchedPairs.map(pair => 
       `${pair.symbol.toLowerCase()}@ticker`
     );
@@ -412,6 +450,18 @@ async function subscribeToBinanceWebSocket() {
     setTimeout(subscribeToBinanceWebSocket, 5000);
   }
 }
+
+app.post('/get-prediction', async (req, res) => {
+    const { symbol } = req.body;
+
+    try {
+        const response = await axios.post('http://127.0.0.1:5000/predict', { symbol });
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 // Start server
 app.listen(PORT, () => {

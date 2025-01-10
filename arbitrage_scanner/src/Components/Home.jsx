@@ -1,51 +1,80 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Home.css";
 
 function Home() {
-  const [binancePairs, setBinancePairs] = useState([]);
-  const [solanaPairs, setSolanaPairs] = useState([]);
-  const [commonTokens, setCommonTokens] = useState([]);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // Hook to navigate between routes
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:8080/api/arbitrage-opportunities");
+      const result = await response.json();
+      setData(result.opportunities || []);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Fetch Binance USDC Pairs
-    fetch('http://localhost:5000/api/binance-usdc-pairs')
-      .then(response => response.json())
-      .then(data => setBinancePairs(data.binancePairs))
-      .catch(error => console.error('Error fetching Binance pairs:', error));
-
-    // Fetch Solana USDC Pairs
-    fetch('http://localhost:5000/api/solana-usdc-pairs')
-      .then(response => response.json())
-      .then(data => setSolanaPairs(data.solanaPairs))
-      .catch(error => console.error('Error fetching Solana pairs:', error));
-
-    // Fetch Common Tokens
-    fetch('http://localhost:5000/api/common-tokens')
-      .then(response => response.json())
-      .then(data => setCommonTokens(data.commonTokens))
-      .catch(error => console.error('Error fetching common tokens:', error));
+    fetchData();
   }, []);
 
   return (
-    <div>
-      <h1>Welcome</h1>
-      <h2>Binance USDC Pairs</h2>
-      <ul>
-        {binancePairs.map(pair => (
-          <li key={pair}>{pair}</li>
-        ))}
-      </ul>
-      <h2>Solana USDC Pairs</h2>
-      <ul>
-        {solanaPairs.map(pair => (
-          <li key={pair}>{pair}</li>
-        ))}
-      </ul>
-      <h2>Common Tokens</h2>
-      <ul>
-        {commonTokens.map(token => (
-          <li key={token}>{token}</li>
-        ))}
-      </ul>
+    <div className="home-container">
+      <h1>Opportunities</h1>
+      {loading ? (
+        <div className="loader">
+          <img
+            src="https://cdn.dribbble.com/users/1186261/screenshots/3718681/_______.gif"
+            alt="Loading..."
+          />
+        </div>
+      ) : (
+        <>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Token</th>
+                <th>Action</th>
+                <th>Profit</th>
+                <th>Profit Percentage</th>
+                <th>Binance Price</th>
+                <th>Jupiter Price</th>
+                <th>Confidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.token}</td>
+                  <td>{item.action}</td>
+                  <td>{item.profit}</td>
+                  <td>{item.profitPercentage}%</td>
+                  <td>{item.binancePrice}</td>
+                  <td>{item.jupiterPrice}</td>
+                  <td>{item.confidence}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="button-container">
+            <button className="refresh-button" onClick={fetchData}>
+              Refresh
+            </button>
+            <button
+              className="prediction-button"
+              onClick={() => navigate("/prediction")}
+            >
+              Prediction
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
