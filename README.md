@@ -1,7 +1,7 @@
 # Arbitrage-Scanner
 
 #### Output Pics
-Output pictures are available in the `Arbitrage-Scanner\output pics` directory.
+Output pictures are available in the `Arbitrage-Scanner\outputpics` directory.
 
 ---
 
@@ -32,8 +32,8 @@ This project combines real-time cryptocurrency arbitrage trading opportunities w
    - Seamless navigation between pages using React Router.
 
 5. **Machine Learning Integration**:
-   - Utilizes LSTM models for sequential price prediction.
-   - Data preprocessing with MinMaxScaler for accurate training.
+   - Utilizes Hybrid model with Bidirectional LSTM and XGBoost Regressor for sequential price prediction.
+   - Data preprocessing with MinMaxScaler for accurate training and also back testing the code .
    - Provides evaluation metrics for predictive model accuracy.
 
 6. **API Endpoints**:
